@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple E-Commerce Website</title>
+  <style>
+    /* CSS styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 10px 0;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    nav .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    nav .nav-links a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .hero {
+      text-align: center;
+      padding: 50px 20px;
+      background-color: #f4f4f4;
+    }
+    #products {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .product-list {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+    .product-item {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 20px;
+      width: 220px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 6px;
+    }
+    .product-item img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    button.add-to-cart {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    button.add-to-cart:hover {
+      background-color: #218838;
+    }
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+    .cart-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .cart-modal-content {
+      background-color: white;
+      padding: 20px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .cart-modal ul {
+      list-style: none;
+      padding: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    .cart-modal ul li {
+      padding: 6px 0;
+      border-bottom: 1px solid #ddd;
+    }
+    .cart-modal button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      margin: 5px;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .cart-modal button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header>
+    <nav>
+      <div class="logo">E-Shop</div>
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#products">Products</a>
+        <a id="cart-icon" style="cursor:pointer;">Cart (0)</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Home Section -->
+  <section id="home">
+    <div class="hero">
+      <h1>Welcome to E-Shop</h1>
+      <p>Your one-stop online shop for amazing products</p>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section id="products">
+    <h2>Featured Products</h2>
+    <div class="product-list">
+      <div class="product-item">
+        <img src="C:\Users\it4100\Downloads\iphone.jfif" alt="Smartphone" />
+        <h3>Smartphone</h3>
+        <p>$299.99</p>
+        <button class="add-to-cart" data-product="Smartphone" data-price="299.99">Add to Cart</button>
+      </div>
+      <div class="product-item">
+        <img src="C:\Users\it4100\Downloads\headphones.jpg" alt="Headphones" />
+        <h3>Headphones</h3>
+        <p>$59.99</p>
+        <button class="add-to-cart" data-product="Headphones" data-price="59.99">Add to Cart</button>
+      </div>
+      <div class="product-item">
+        <img src="C:\Users\it4100\Downloads\sneakers.jpg" alt="Sneakers" />
+        <h3>Sneakers</h3>
+        <p>$89.99</p>
+        <button class="add-to-cart" data-product="Sneakers" data-price="89.99">Add to Cart</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 E-Shop. All rights reserved.</p>
+  </footer>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="cart-modal">
+    <div class="cart-modal-content">
+      <h3>Your Cart</h3>
+      <ul id="cart-items"></ul>
+      <p>Total: $<span id="total-price">0.00</span></p>
+      <button id="checkout-button">Checkout</button>
+      <button id="close-cart">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript code
+    let cart = [];
+    let totalPrice = 0;
+
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+      button.addEventListener('click', event => {
+        const productName = event.target.getAttribute('data-product');
+        const productPrice = parseFloat(event.target.getAttribute('data-price'));
+        cart.push({ name: productName, price: productPrice });
+        totalPrice += productPrice;
+        updateCartDisplay();
+      });
+    });
+
+    function updateCartDisplay() {
+      const cartIcon = document.getElementById('cart-icon');
+      const cartItems = document.getElementById('cart-items');
+      const totalPriceElement = document.getElementById('total-price');
+
+      // Update cart count
+      cartIcon.textContent = `Cart (${cart.length})`;
+
+      // Update cart items list
+      cartItems.innerHTML = '';
+      cart.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+        cartItems.appendChild(li);
+      });
+
+      // Update total price
+      totalPriceElement.textContent = totalPrice.toFixed(2);
+    }
+
+    document.getElementById('cart-icon').addEventListener('click', () => {
+      document.getElementById('cart-modal').style.display = 'flex';
+    });
+
+    document.getElementById('close-cart').addEventListener('click', () => {
+      document.getElementById('cart-modal').style.display = 'none';
+    });
+
+    document.getElementById('checkout-button').addEventListener('click', () => {
+      alert('Checkout feature is not implemented yet.');
+    });
+  </script>
+</body>
+</html>
